@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  - build:
+  build:
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
@@ -28,20 +28,16 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-  - test:
+  test:
     docker:
       - image: circleci/node:7.10
     steps:
       - checkout 
       # run tests!
       - run: npm test
-    requires: 
-      - build
-  - deploy_recette:
-    type: approval
-    requires: 
-      - test
-  - deploy_prod:
+ 
+   
+  deploy_prod:
     requires:
       - deploy_recette
 workflows:
@@ -49,7 +45,14 @@ workflows:
   build_test_recette_deploy:
     jobs:
       - build
-      - test
-      - deploy_recette
-      - deploy_prod
+      - test:
+        requires: 
+          - build
+      - deploy_recette:
+        type: approval
+        requires: 
+          - test
+      - deploy_prod:
+        requires:
+          - deploy_recette
 
