@@ -40,5 +40,7 @@ workflows:
   build_test_recette_deploy:
     jobs:
       - build
-      - test
+      - test:
+        requires:
+          - build
  
