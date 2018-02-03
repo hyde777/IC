@@ -35,10 +35,18 @@ jobs:
       - checkout 
       # run tests!
       - run: npm test
-    requires: build
+    requires: 
+      - build
+  deploy_recette:
+    type: approval
+    requires: 
+      - test
+  deploy_prod:
+    requires:
+      - deploy_recette
 workflows:
   version: 2
-  build_and_test:
+  build_test_recette_deploy:
     jobs:
       - build
       - test
