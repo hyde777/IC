@@ -36,9 +36,13 @@ jobs:
       # run tests!
       - run: npm test
   deploy_recette:
+    docker:
+      - image: circleci/node:7.10
     steps:
       - checkout
   deploy_prod:
+    docker:
+      - image: circleci/node:7.10
     steps:
       - checkout
 workflows:
