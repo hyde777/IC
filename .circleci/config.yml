@@ -62,6 +62,7 @@ workflows:
               only:
                 - develop
       - deploy_to_recette:
+          type: approval
           requires:
             - test
           filters:
