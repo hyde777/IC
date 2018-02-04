@@ -35,21 +35,24 @@ jobs:
       - checkout 
       # run tests!
       - run: npm test
-  deploy_recette:
+  deploy_to_recette:
     docker:
       - image: circleci/node:7.10
     steps:
       - checkout
-  deploy_prod:
+  deploy_to_prod:
     docker:
       - image: circleci/node:7.10
     steps:
       - checkout
 workflows:
   version: 2
-  build_test_recette_deploy:
+  dev_test_to_recette:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: develop
       #require need 2 tab
       - test:
           requires:
@@ -58,18 +61,29 @@ workflows:
             branches:
               only:
                 - develop
-      - deploy_recette:
-          type: approval
+      - deploy_to_recette:
           requires:
             - test
           filters:
              branches:
-               only: recette
-      - deploy_prod:
-          requires:
-            - deploy_recette
+               only:
+                - develop 
+  recette_test_to_prod:
+    jobs:
+      - build:
           filters:
             branches:
-              only: master
+              only: recette
+      - test:
+          filters:
+            branches:
+              only: recette
+      - deploy_to_prod:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: recette
       
  
