@@ -54,12 +54,22 @@ workflows:
       - test:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - develop
       - deploy_recette:
           type: approval
           requires:
             - test
+          filters:
+             branches:
+               only: recette
       - deploy_prod:
           requires:
             - deploy_recette
+          filters:
+            branches:
+              only: master
       
  
