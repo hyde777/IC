@@ -25,6 +25,12 @@ jobs:
             - v1-dependencies-{{ checksum "package.json" }}
       - run: npm install -dev
       - run: npm test
+  sonarqube:
+    docker:
+      - image: sonarqube:alpine
+    steps:
+      - checkout
+      - run: sonar-scanner
   deploy_to_recette:
     docker:
       - image: circleci/node:7.10
