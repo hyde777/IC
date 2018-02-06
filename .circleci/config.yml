@@ -27,7 +27,7 @@ jobs:
       - run: npm test
   sonarqube:
     docker:
-      - image: sonarqube:alpine
+      - image: hyde777/ic:0.0.1
     steps:
       - checkout
       - run: sonar-scanner
