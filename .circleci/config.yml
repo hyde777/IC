@@ -33,12 +33,62 @@ jobs:
       - image: circleci/node:7.10
     steps:
       - checkout 
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
       # run tests!
+      - run: npm install -dev
       - run: npm test
+  deploy_to_recette:
+    docker:
+      - image: circleci/node:7.10
+    steps:
+      - checkout
+  deploy_to_prod:
+    docker:
+      - image: circleci/node:7.10
+    steps:
+      - checkout
 workflows:
   version: 2
-  build_and_test:
+  dev_test_to_recette:
     jobs:
-      - build
-      - test
-
+      - build:
+          filters:
+            branches:
+              only: develop
+      #require need 2 tab
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy_to_recette:
+          type: approval
+          requires:
+            - test
+          filters:
+             branches:
+               only:
+                - develop 
+  recette_test_to_prod:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: recette
+      - test:
+          filters:
+            branches:
+              only: recette
+      - deploy_to_prod:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: recette
+      
+ 
